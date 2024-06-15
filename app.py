@@ -19,7 +19,7 @@ def submit():
     return render_template('weather.html', weather=weather_data)
 
 @app.route('/notification', methods=['POST'])
-def notification_data():
+def notification_data_save():
     if 'X-Forwarded-For' in request.headers:
         user_ip = request.headers['X-Forwarded-For']  # 프록시를 통한 접속 감지
     else:
