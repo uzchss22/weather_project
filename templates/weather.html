@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>날씨 정보</title>
+</head>
+<body>
+<h1>날씨 정보</h1>
+{% if weather %}
+<p>강수 형태: {{ weather['PTY'] }}</p>
+<p>습도: {{ weather['REH'] }}</p>
+<p>1시간 강수량: {{ weather['RN1'] }}</p>
+<p>기온: {{ weather['T1H'] }}</p>
+<p>풍향: {{ weather['VEC'] }}</p>
+<p>풍속: {{ weather['WSD'] }}</p>
+{% else %}
+<p>정보를 불러오는데 실패했습니다.</p>
+{% endif %}
+</body>
+</html>
