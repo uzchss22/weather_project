@@ -3,7 +3,7 @@ from db_manager import get_weather_data
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from weather_api import weather_scheduler
-from db_manager import delete_db_scheduler
+from db_manager import delete_db_scheduler, insert_notification
 
 app = Flask(__name__)
 
@@ -18,10 +18,20 @@ def submit():
     weather_data = get_weather_data(region, city)
     return render_template('weather.html', weather=weather_data)
 
-
+@app.route('/notification', methods=['POST'])
+def notification_data():
+    if 'X-Forwarded-For' in request.headers:
+        user_ip = request.headers['X-Forwarded-For']  # 프록시를 통한 접속 감지
+    else:
+        user_ip = request.remote_addr
+    timeset = request.form['alarmTime']
+    insert_notification(user_ip, timeset)
+    return render_template('index.html')
+    
+    
 delete_db_scheduler() # 서버 시작 시 오래된 데이터 있으면 지움.
 
-weather_scheduler()
+# weather_scheduler()
 
 
 scheduler = BackgroundScheduler(daemon=True)

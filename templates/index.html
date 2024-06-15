@@ -66,9 +66,20 @@ function validateForm() {
   submitButton.disabled = !region || region === "--선택--" || !city || city === "--선택--";
 }
 
+function toggleNotificationControls() {
+  var alarmTimeSelect = document.getElementById("alarmTime");
+  var notificationSubmit = document.getElementById("save");
+  var statusCheckbox = document.getElementById("status");
+
+  alarmTimeSelect.disabled = !statusCheckbox.checked;
+  notificationSubmit.disabled = !statusCheckbox.checked;
+}
+
 window.onload = function() {
   initRegions();
+  toggleNotificationControls();
 };
+
 
 </script>
 </head>
@@ -86,5 +97,43 @@ window.onload = function() {
 
   <input type="submit" id="submit" value="제출" disabled>
 </form>
+<hr>
+
+        <p>알림을 받으시겠습니까?</p>
+        <label for="status">동의</label><br>
+        <input type="checkbox" id="status" name="agree" value="1" onchange="toggleNotificationControls()">
+<form action="/notification" method="post">
+        <label for="alarmTime">알람 시간 선택:</label>
+        <select id="alarmTime" name="alarmTime" disabled>
+            <option value="00">00:00</option>
+            <option value="01">01:00</option>
+            <option value="02">02:00</option>
+            <option value="03">03:00</option>
+            <option value="04">04:00</option>
+            <option value="05">05:00</option>
+            <option value="06">06:00</option>
+            <option value="07" selected>07:00</option>
+            <option value="08">08:00</option>
+            <option value="09">09:00</option>
+            <option value="10">10:00</option>
+            <option value="11">11:00</option>
+            <option value="12">12:00</option>
+            <option value="13">13:00</option>
+            <option value="14">14:00</option>
+            <option value="15">15:00</option>
+            <option value="16">16:00</option>
+            <option value="17">17:00</option>
+            <option value="18">18:00</option>
+            <option value="19">19:00</option>
+            <option value="20">20:00</option>
+            <option value="21">21:00</option>
+            <option value="22">22:00</option>
+            <option value="23">23:00</option>
+        </select>
+
+
+  <input type="submit" id="save" value="설정 저장" disabled>
+    </form>
+
 </body>
 </html>

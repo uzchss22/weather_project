@@ -3,6 +3,12 @@ from mysql.connector import Error
 import pandas as pd
 from datetime import datetime, timedelta
 
+
+
+"""오늘 날짜를 'YYYYMMDD' 형식의 문자열로 반환하는 함수"""
+def get_today_date():
+    return datetime.now().strftime('%Y%m%d')
+
 """ DB 연결 함수 """
 def connect_to_db():
     try:
@@ -45,9 +51,9 @@ def get_weather_data(region, city):
         cursor = connection.cursor(dictionary=True)
         query = """
         SELECT PTY, REH, RN1, T1H, VEC, WSD FROM wtr_info
-        WHERE region=%s AND city=%s
+        WHERE region=%s AND city=%s AND base_date=%s
         """
-        cursor.execute(query, (region, city))
+        cursor.execute(query, (region, city, get_today_date()))
         result = cursor.fetchone()
         return result
     except Error as e:
@@ -76,6 +82,26 @@ def delete_old_weather_data():
             if connection.is_connected():
                 cursor.close()
                 connection.close()
+
+def insert_notification(user_ip, timeset):
+    connection = connect_to_db()
+    if connection is not None:
+        cursor = connection.cursor()
+        insert_query = """
+        INSERT INTO notification (ip, timeset)
+        VALUES (%s, %s)
+        """
+        try:
+            cursor.execute(insert_query, (user_ip, timeset))
+            connection.commit()
+            print(cursor.rowcount, "records inserted successfully.")
+        except Error as e:
+            print("Failed to insert record into MySQL table", e)
+        finally:
+            cursor.close()
+            connection.close()
+    
+    
 
 def delete_db_scheduler():
     delete_old_weather_data()
