@@ -2,7 +2,6 @@ import mysql.connector
 from mysql.connector import Error
 import pandas as pd
 from datetime import datetime, timedelta
-from apscheduler.schedulers.background import BackgroundScheduler
 
 """ DB 연결 함수 """
 def connect_to_db():
@@ -78,7 +77,5 @@ def delete_old_weather_data():
                 cursor.close()
                 connection.close()
 
-
-scheduler = BackgroundScheduler()
-scheduler.add_job(delete_old_weather_data, 'cron', hour=0)  # 매일 자정에 실행
-scheduler.start()
+def delete_db_scheduler():
+    delete_old_weather_data()

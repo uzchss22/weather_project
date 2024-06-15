@@ -1,7 +1,6 @@
 # weather_api.py
 import requests
 import pandas as pd
-from apscheduler.schedulers.blocking import BlockingScheduler # 매일 오전 5시에 함수를 호출하는 모듈
 from datetime import datetime
 
 from db_manager import insert_weather_data    
@@ -49,8 +48,5 @@ def fetch_and_process_weather_data(api_key, base_url, base_time, csv_file_path):
     if weather_data_to_insert:
         insert_weather_data(weather_data_to_insert)
 
-scheduler = BlockingScheduler()
-scheduler.add_job(fetch_and_process_weather_data, 'cron', hour=5, args=[API_KEY, BASE_URL, BASE_TIME, CSV_FILE_PATH])
-
-# 스케줄러 시작
-scheduler.start()
+def weather_scheduler():
+    fetch_and_process_weather_data(API_KEY, BASE_URL, BASE_TIME, CSV_FILE_PATH)
