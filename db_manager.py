@@ -2,6 +2,7 @@ import mysql.connector
 from mysql.connector import Error
 import pandas as pd
 from datetime import datetime, timedelta
+import aiomysql
 
 
 
@@ -23,26 +24,23 @@ def connect_to_db():
         print("Error while connecting to MySQL", e)
         return None
 
-""" 전처리 된 데이터를 wtr_info 테이블에 삽입하는 함수 """
-def insert_weather_data(data):
-    connection = connect_to_db()
-    if connection is not None:
-        cursor = connection.cursor()
-        insert_query = """
-        INSERT INTO wtr_info (region, city, base_date, base_time, PTY, REH, RN1, T1H, VEC, WSD)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """
-        try:
-            # 데이터 삽입 전 None 값 확인 및 처리
+""" 전처리 된 데이터를 wtr_info 테이블에 삽입하는 함수 """ # 이 함수는 최적화를 위해 비동기화로 선언 (fetch_weather(), fetch_and_process_data(), insert_weather_data())
+async def insert_weather_data(data):
+    connection = await aiomysql.connect(host='localhost', port=3306, user='root', password='475922', db='weather_db')
+    try:
+        async with connection.cursor() as cursor:
+            insert_query = """
+            INSERT INTO wtr_info (region, city, base_date, base_time, PTY, REH, RN1, T1H, VEC, WSD)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """
             cleaned_data = [(tuple(None if pd.isna(x) else x for x in entry)) for entry in data]
-            cursor.executemany(insert_query, cleaned_data)
-            connection.commit()
+            await cursor.executemany(insert_query, cleaned_data)
+            await connection.commit()
             print(cursor.rowcount, "records inserted successfully.")
-        except Error as e:
-            print("Failed to insert record into MySQL table", e)
-        finally:
-            cursor.close()
-            connection.close()
+    except Exception as e:
+        print("Failed to insert record into MySQL table", e)
+    finally:
+        connection.close()
 
 """ 유저의 요청을 받으면 table에서 일치하는 행을 찾는 함수 """
 def get_weather_data(region, city):

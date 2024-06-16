@@ -1,7 +1,9 @@
 # weather_api.py
-import requests
+# import requests
 import pandas as pd
 from datetime import datetime
+import aiohttp
+import asyncio
 
 from db_manager import insert_weather_data    
 
@@ -16,38 +18,43 @@ CSV_FILE_PATH = './data/region_data.csv'
 def get_today_date():
     return datetime.now().strftime('%Y%m%d')
 
-""" api를 호출하고 db에 저장할 데이터셋을 전처리하는 함수 """
-def fetch_and_process_weather_data(api_key, base_url, base_time, csv_file_path):
-    print("fetch_and_process_weather_data() a executed")
-    base_date = get_today_date()  # 매일 호출될 때마다 오늘 날짜로 갱신
+""" api를 호출하고 db에 저장할 데이터셋을 전처리하는 함수 """ # 이 함수는 최적화를 위해 비동기화로 선언 (fetch_weather(), fetch_and_process_data(), insert_weather_data())
+async def fetch_weather(session, url):
+    async with session.get(url) as response:
+        return await response.json()
+
+async def fetch_and_process_weather_data(api_key, base_url, base_time, csv_file_path): # 이 함수는 최적화를 위해 비동기화로 선언 (fetch_weather(), fetch_and_process_data(), insert_weather_data())
+
+    print("fetch_and_process_weather_data() 실행됨")
+    base_date = datetime.now().strftime('%Y%m%d')  # 오늘 날짜 갱신
     df = pd.read_csv(csv_file_path)
     weather_data_to_insert = []
-
-    # API 호출 및 결과 처리
-    for index, row in df.iterrows():
-        nx, ny, region, city = row['nx'], row['ny'], row['region'], row['city']
-        api_url = f"{base_url}authKey={api_key}&dataType=JSON&numOfRows=10&pageNo=1&base_date={base_date}&base_time={base_time}&nx={nx}&ny={ny}"
-        response = requests.get(api_url)
-        if response.status_code == 200:
-            data = response.json()
-            items = data['response']['body']['items']['item']
-            category_values = {}
-            for item in items:
-                category = item['category']
-                obsrValue = item['obsrValue']
-                category_values[category] = obsrValue
-            
-            # db에 저장할 데이터 전처리
-            weather_data_to_insert.append((
-                region, city, base_date, base_time,
-                category_values.get('PTY'), category_values.get('REH'), category_values.get('RN1'), category_values.get('T1H'), category_values.get('VEC'), category_values.get('WSD')
-            ))
-        else:
-            print(f"Error fetching data for ({nx}, {ny}): {response.status_code}")
+    
+    async with aiohttp.ClientSession() as session:
+        tasks = []
+        for index, row in df.iterrows():
+            nx, ny, region, city = row['nx'], row['ny'], row['region'], row['city']
+            url = f"{base_url}authKey={api_key}&dataType=JSON&numOfRows=10&pageNo=1&base_date={base_date}&base_time={base_time}&nx={nx}&ny={ny}"
+            tasks.append(fetch_weather(session, url))
+        
+        responses = await asyncio.gather(*tasks)
+        
+        for response, row in zip(responses, df.itertuples()):
+            if response['response']['header']['resultCode'] == '00':
+                items = response['response']['body']['items']['item']
+                category_values = {item['category']: item['obsrValue'] for item in items}
+                weather_data_to_insert.append((
+                    row.region, row.city, base_date, base_time,
+                    category_values.get('PTY'), category_values.get('REH'), category_values.get('RN1'), category_values.get('T1H'), category_values.get('VEC'), category_values.get('WSD')
+                ))
+            else:
+                print(f"데이터 수신 오류 ({row.nx}, {row.ny}): {response['response']['header']['resultCode']}")
 
     if weather_data_to_insert:
-        insert_weather_data(weather_data_to_insert)
+        await insert_weather_data(weather_data_to_insert)
 
 def weather_scheduler():
-    fetch_and_process_weather_data(API_KEY, BASE_URL, BASE_TIME, CSV_FILE_PATH)
+    asyncio.run(fetch_and_process_weather_data(API_KEY, BASE_URL, BASE_TIME, CSV_FILE_PATH))
+
+
 
