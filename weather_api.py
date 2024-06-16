@@ -14,16 +14,13 @@ BASE_TIME = "0400" # 예보 api인데 익일 해당 시간 이전만 데이터 �
 CSV_FILE_PATH = './data/region_data.csv'
 
 
-"""오늘 날짜를 'YYYYMMDD' 형식의 문자열로 반환하는 함수"""
-def get_today_date():
-    return datetime.now().strftime('%Y%m%d')
 
-""" api를 호출하고 db에 저장할 데이터셋을 전처리하는 함수 """ # 이 함수는 최적화를 위해 비동기화로 선언 (fetch_weather(), fetch_and_process_data(), insert_weather_data())
+""" api를 호출하고 db에 저장할 데이터셋을 전처리하는 함수 """ # 이 함수는 최적화를 위해 예외적으로 비동기화로 실행. (fetch_weather(), fetch_and_process_data(), insert_weather_data())
 async def fetch_weather(session, url):
     async with session.get(url) as response:
         return await response.json()
 
-async def fetch_and_process_weather_data(api_key, base_url, base_time, csv_file_path): # 이 함수는 최적화를 위해 비동기화로 선언 (fetch_weather(), fetch_and_process_data(), insert_weather_data())
+async def fetch_and_process_weather_data(api_key, base_url, base_time, csv_file_path): # 이 함수는 최적화를 위해 예외적으로 비동기화로 실행. (fetch_weather(), fetch_and_process_data(), insert_weather_data())
 
     print("fetch_and_process_weather_data() 실행됨")
     base_date = datetime.now().strftime('%Y%m%d')  # 오늘 날짜 갱신
