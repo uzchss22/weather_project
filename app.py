@@ -40,7 +40,7 @@ def notification_data_save():
     
 delete_db_scheduler() # 서버 시작 시 오래된 데이터 있으면 지움.
 
-# weather_scheduler()
+# weather_scheduler() # 
 
 
 scheduler = BackgroundScheduler(daemon=True)

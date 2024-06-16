@@ -83,20 +83,21 @@ def delete_old_weather_data():
                 cursor.close()
                 connection.close()
 
+""" 기존에 같은 ip가 있으면 replace # ip == primary key """
 def insert_notification(user_ip, timeset):
     connection = connect_to_db()
     if connection is not None:
         cursor = connection.cursor()
-        insert_query = """
-        INSERT INTO notification (ip, timeset)
+        replace_query = """
+        REPLACE INTO notification (ip, timeset)
         VALUES (%s, %s)
         """
         try:
-            cursor.execute(insert_query, (user_ip, timeset))
+            cursor.execute(replace_query, (user_ip, timeset))
             connection.commit()
-            print(cursor.rowcount, "records inserted successfully.")
+            print(cursor.rowcount, "records repalce successfully.")
         except Error as e:
-            print("Failed to insert record into MySQL table", e)
+            print("Failed to replace record into MySQL table", e)
         finally:
             cursor.close()
             connection.close()
@@ -121,7 +122,6 @@ def delete_user(ip):
                 connection.close()
 
         
-    
     
 
 def delete_db_scheduler():

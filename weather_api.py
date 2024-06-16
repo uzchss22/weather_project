@@ -50,3 +50,4 @@ def fetch_and_process_weather_data(api_key, base_url, base_time, csv_file_path):
 
 def weather_scheduler():
     fetch_and_process_weather_data(API_KEY, BASE_URL, BASE_TIME, CSV_FILE_PATH)
+
