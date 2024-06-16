@@ -69,10 +69,16 @@ function validateForm() {
 function toggleNotificationControls() {
   var alarmTimeSelect = document.getElementById("alarmTime");
   var notificationSubmit = document.getElementById("save");
-  var statusCheckbox = document.getElementById("status");
+  var statusCheckbox = document.querySelector('input[name="status"]:checked');
 
-  alarmTimeSelect.disabled = !statusCheckbox.checked;
-  notificationSubmit.disabled = !statusCheckbox.checked;
+  if (statusCheckbox.value === "true") {
+    alarmTimeSelect.disabled = false;
+    notificationSubmit.disabled = false;
+  } else {
+    // '비동의' 선택 시 알람 시간 선택 비활성화, 저장 버튼만 활성화
+    alarmTimeSelect.disabled = true;
+    notificationSubmit.disabled = false;
+  }
 }
 
 window.onload = function() {
@@ -99,10 +105,13 @@ window.onload = function() {
 </form>
 <hr>
 
-        <p>알림을 받으시겠습니까?</p>
-        <label for="status">동의</label><br>
-        <input type="checkbox" id="status" name="agree" value="1" onchange="toggleNotificationControls()">
 <form action="/notification" method="post">
+        <p>알림을 받으시겠습니까?</p>
+        <label for="status">동의</label>
+        <input type="radio" id="agree" name="status" value="true" onchange="toggleNotificationControls()"><br>
+
+        <label for="status">비동의</label>
+        <input type="radio" id="disagree" name="status" value="flase" onchange="toggleNotificationControls()"><br>
         <label for="alarmTime">알람 시간 선택:</label>
         <select id="alarmTime" name="alarmTime" disabled>
             <option value="00">00:00</option>

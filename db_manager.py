@@ -101,6 +101,27 @@ def insert_notification(user_ip, timeset):
             cursor.close()
             connection.close()
     
+
+""" 알림 수신을 비동의 했을 경우 db에서 삭제하는 함수 """
+def delete_user(ip):
+    print("delete_user() a executed")
+    connection = connect_to_db()
+    if connection is not None:
+        try:
+            cursor = connection.cursor()
+            delete_query = "DELETE FROM notification WHERE ip = %s"
+            cursor.execute(delete_query, (ip,))
+            connection.commit()
+            print(cursor.rowcount, "records deleted successfully.")
+        except Error as e:
+            print("Failed to delete user records from MySQL table", e)
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+
+        
+    
     
 
 def delete_db_scheduler():

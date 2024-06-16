@@ -3,7 +3,7 @@ from db_manager import get_weather_data
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from weather_api import weather_scheduler
-from db_manager import delete_db_scheduler, insert_notification
+from db_manager import delete_db_scheduler, insert_notification, delete_user
 
 app = Flask(__name__)
 
@@ -20,12 +20,21 @@ def submit():
 
 @app.route('/notification', methods=['POST'])
 def notification_data_save():
+    status = request.form['status'] # 알림 수신 동의 여부
+    # ip주소 저장 로직.
     if 'X-Forwarded-For' in request.headers:
         user_ip = request.headers['X-Forwarded-For']  # 프록시를 통한 접속 감지
     else:
         user_ip = request.remote_addr
-    timeset = request.form['alarmTime']
-    insert_notification(user_ip, timeset)
+
+        
+        
+    if (status == "true"):                              # 알림 활성화 상태인경우 db에 ip, 시간 저장.
+        timeset = request.form['alarmTime']
+        insert_notification(user_ip, timeset)
+    else:                                 # 비활성화로 제출 시 db에서 해당하는 ip가 있는지 조회 후 delete.
+        delete_user(user_ip)    
+    
     return render_template('index.html')
     
     
