@@ -2,19 +2,65 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>날씨 정보</title>
+<link rel="stylesheet" href="/static/css/style.css">
+<title>오늘의 날씨</title>
 </head>
 <body>
-<h1>날씨 정보</h1>
+  <header class="main-header"><a href="index.html" class="home-link">날씨 알리미</a></header>
+  <div class="container">
+  <h1 class="title">현재 날씨 정보</h1>
+  <div class="weather-info">
 {% if weather %}
-<p>강수 형태: {{ weather['PTY'] }}</p>
-<p>습도: {{ weather['REH'] }}</p>
-<p>1시간 강수량: {{ weather['RN1'] }}</p>
-<p>기온: {{ weather['T1H'] }}</p>
-<p>풍향: {{ weather['VEC'] }}</p>
-<p>풍속: {{ weather['WSD'] }}</p>
+    {% if weather['PTY'] == 0 %}
+        {% set weather_type = "맑음" %}
+    {% elif weather['PTY'] == 1 %}
+        {% set weather_type = "비" %}
+    {% elif weather['PTY'] == 2 %}
+        {% set weather_type = "비 또는 눈" %}
+    {% elif weather['PTY'] == 3 %}
+        {% set weather_type = "눈" %}
+    {% elif weather['PTY'] == 4 %}
+        {% set weather_type = "소나기" %}
+    {% else %}
+        {% set weather_type = "정보 없음" %}
+    {% endif %}
+    
+    {% set direction = "정보 없음" %}
+    {% if weather['VEC'] < 22.5 or weather['VEC'] >= 337.5 %}
+        {% set direction = "북풍" %}
+    {% elif weather['VEC'] < 67.5 %}
+        {% set direction = "북동풍" %}
+    {% elif weather['VEC'] < 112.5 %}
+        {% set direction = "동풍" %}
+    {% elif weather['VEC'] < 157.5 %}
+        {% set direction = "남동풍" %}
+    {% elif weather['VEC'] < 202.5 %}
+        {% set direction = "남풍" %}
+    {% elif weather['VEC'] < 247.5 %}
+        {% set direction = "남서풍" %}
+    {% elif weather['VEC'] < 292.5 %}
+        {% set direction = "서풍" %}
+    {% elif weather['VEC'] < 337.5 %}
+        {% set direction = "북서풍" %}
+    {% endif %}
+    
+    <p class="location">{{ region }}, {{ city }}</p>
+    <p class="temperature">기온: {{ weather['T1H'] }} &#8451;</p>
+    <p class="condition">날씨: {{ weather_type }}</p>
+  </div>
+  <div class="additional-info">
+    <p>습도: {{ weather['REH'] }} %</p>
+    <p>1시간 강수량: {{ weather['RN1'] }} mm</p>
+    <p>풍향: {{ direction }}</p>
+    <p>풍속: {{ weather['WSD'] }} m/s</p>
+  <!-- <a href="./last_weather.html">최근 7일 날씨정보 보러가기</a> -->
 {% else %}
-<p>정보를 불러오는데 실패했습니다.</p>
+    <p>정보를 불러오는데 실패했습니다.</p>
+  </div>
+  <div class="additional-info">
 {% endif %}
+  </div>
+  </div>
+</div>
 </body>
 </html>

@@ -2,35 +2,98 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>지역 및 도시 선택</title>
-<script src="/static/js/main.js"></script>
+<link rel="stylesheet" href="/static/css/style.css">
+<title>날씨 선택</title>
+<!-- <script src="/static/js/main.js"></script> -->
 <script src="/static/js/util.js"></script>
+<script>
+// 알림 권한 요청 함수
+function requestNotificationPermission() {
+    // Notification API를 지원하는지 확인
+    if (!("Notification" in window)) {
+        alert("이 브라우저는 알림을 지원하지 않습니다.");
+    } else if (Notification.permission === "granted") {
+        // 이미 권한이 허용된 경우
+        console.log("알림 권한이 이미 허용되어 있습니다.");
+    } else if (Notification.permission !== "denied") {
+        // 권한 요청
+        Notification.requestPermission().then(permission => {
+            // 사용자가 권한을 허용한 경우
+            if (permission === "granted") {
+                console.log("알림이 허용되었습니다!");
+            }
+        });
+    }
+}
+
+// 알림 보내기 함수
+function sendNotification(message) {
+    // 새 알림 생성
+    new Notification(message);
+}
+
+// 현재 시간과 알림 시간 차를 밀리초로 반환해주는 함수
+function getTimeUntil(targetHour) {
+    const now = new Date();
+    const target = new Date();
+
+    target.setHours(targetHour, 0, 0, 0);
+
+    // 이미 시간이 지났다면 다음 날로 설정
+    if (target <= now) {
+        target.setDate(target.getDate() + 1);
+    }
+
+    return target.getTime() - now.getTime(); // 밀리초 단위로 차이 계산
+}
+
+const timeset = "{{ timeset }}";  // 문자열을 정수로 변환
+const parsedTimeset = parseInt(timeset, 10);
+
+  if (timeset !== 24) {  // timeset이 24가 아닐 때만 실행
+    const delay = getTimeUntil(parsedTimeset);  // timeset을 사용하여 시간 계산
+    setTimeout(() => {
+      sendNotification("오늘 날씨는 맑습니다.");
+    }, delay);
+  } 
+
+// 알림 권한 요청
+requestNotificationPermission();
+
+</script>
 </head>
 <body>
-<form action="/submit" method="post">
-  <label for="region">지역 선택:</label>
-  <select id="region" name="region" onchange="updateCities(this.value)">
-    <!-- 지역 옵션은 자바스크립트로 채워집니다 -->
-  </select>
+  <header class="main-header"><a href="index.html" class="home-link">날씨 알리미</a></header>
+  <div class="container">
+    <h1 class="title">지역을 선택하세요.</h1>
+    <form action="/submit" method="post" class="form-region">
+      <div class="form-group">
+        <label for="region" class="form-label">지역 선택:</label>
+        <select id="region" name="region" class="form-select" onchange="updateCities(this.value)">
+        </select>
+      </div>
 
-  <label for="city">도시 선택:</label>
-  <select id="city" name="city" onchange="validateForm()" disabled>
-    <!-- 도시 선택은 초기에 비활성화되어 있습니다 -->
-  </select>
+      <div class="form-group">
+        <label for="city" class="form-label">도시 선택:</label>
+        <select id="city" name="city" class="form-select" onchange="validateForm()" disabled>
+        </select>
+      </div>
 
-  <input type="submit" id="submit" value="제출" disabled>
-</form>
-<hr>
+      <input type="submit" id="submit" class="btn" value="제출" disabled>
+    </form>
+    <hr class="divider">
+    <form action="/notification" method="post" class="form-notification">
+      <p class="info-text">알림을 받으시겠습니까?</p>
+      <div class="form-group radio-group">
+        <input type="radio" id="agree" name="status" value="true" class="radio-input" onchange="toggleNotificationControls()">
+        <label for="status" class="radio-label">동의</label><br>
 
-<form action="/notification" method="post">
-        <p>알림을 받으시겠습니까?</p>
-        <label for="status">동의</label>
-        <input type="radio" id="agree" name="status" value="true" onchange="toggleNotificationControls()"><br>
-
-        <label for="status">비동의</label>
-        <input type="radio" id="disagree" name="status" value="flase" onchange="toggleNotificationControls()"><br>
-        <label for="alarmTime">알람 시간 선택:</label>
-        <select id="alarmTime" name="alarmTime" disabled>
+        <input type="radio" id="disagree" name="status" value="false" class="radio-input" onchange="toggleNotificationControls()">
+        <label for="status" class="radio-label">비동의</label><br>
+      </div>
+      <div class="form-group">
+        <label for="alarmTime" class="form-label">알람 시간 선택:</label>
+        <select id="alarmTime" name="alarmTime" class="form-select" disabled>
             <option value="00">00:00</option>
             <option value="01">01:00</option>
             <option value="02">02:00</option>
@@ -55,11 +118,12 @@
             <option value="21">21:00</option>
             <option value="22">22:00</option>
             <option value="23">23:00</option>
+
         </select>
+      </div>
 
-
-  <input type="submit" id="save" value="설정 저장" disabled>
+      <input type="submit" id="save" class="btn" value="설정 저장" disabled>
     </form>
-
+  </div>
 </body>
 </html>

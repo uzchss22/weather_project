@@ -22,7 +22,7 @@ async def fetch_weather(session, url):
 
 async def fetch_and_process_weather_data(api_key, base_url, base_time, csv_file_path): # 이 함수는 최적화를 위해 예외적으로 비동기화로 실행. (fetch_weather(), fetch_and_process_data(), insert_weather_data())
 
-    print("fetch_and_process_weather_data() 실행됨")
+    print("fetch_and_process_weather_data() a executed")
     base_date = datetime.now().strftime('%Y%m%d')  # 오늘 날짜 갱신
     df = pd.read_csv(csv_file_path)
     weather_data_to_insert = []
@@ -52,6 +52,5 @@ async def fetch_and_process_weather_data(api_key, base_url, base_time, csv_file_
 
 def weather_scheduler():
     asyncio.run(fetch_and_process_weather_data(API_KEY, BASE_URL, BASE_TIME, CSV_FILE_PATH))
-
 
 

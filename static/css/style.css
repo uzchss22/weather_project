@@ -1,46 +1,125 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #f0f8ff;
+    color: #333;
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    background-color: #f0f0f0;
 }
 
-h1 {
+.main-header {
+    background-color: #004b97;
+    padding: 10px 0;
+    text-align: center;
+}
+
+.home-link {
+    color: #fff;
+    font-size: 24px;
+    text-decoration: none;
+}
+
+.container {
+    width: 80%;
+    max-width: 600px;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.title {
     color: #333;
+    text-align: center;
 }
 
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.form-group {
+    margin-bottom: 15px;
 }
 
-label {
-    margin: 5px 0;
+.form-label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
 }
 
-input, button {
-    padding: 10px;
+.form-select, .btn {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    box-sizing: border-box;
+}
+
+.btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+.radio-group {
+    margin: 10px 0;
+}
+
+.radio-label {
+    margin-left: 5px;
     font-size: 16px;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
+.radio-input {
+    vertical-align: middle;
+}
+
+.divider {
+    border-color: #ccc;
     margin-top: 20px;
 }
 
-th, td {
-    border: 1px solid #ccc;
-    padding: 10px;
-    text-align: left;
+.info-text {
+    font-size: 16px;
+    margin-bottom: 10px;
 }
 
-th {
-    background-color: #f4f4f4;
+/* 비활성화된 요소의 스타일 */
+select:disabled, .btn:disabled {
+    background-color: #ccc;
+}
+
+.weather-info {
+    text-align: center;
+    font-size: 20px;
+    padding: 20px;
+    background-color: #e0f7fa;
+    margin-top: 20px;
+}
+
+.location {
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.temperature {
+    color: #007bff;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.condition {
+    font-style: italic;
+}
+
+.additional-info {
+    margin-top: 20px;
+    background-color: #f0f8ff;
+    padding: 10px;
+    font-size: 18px;
+}
+
+.additional-info p {
+    margin: 5px;
+    text-align: center;
 }

@@ -61,17 +61,16 @@ function validateForm() {
 }
 
 function toggleNotificationControls() {
-  var alarmTimeSelect = document.getElementById("alarmTime");
-  var notificationSubmit = document.getElementById("save");
-  var statusCheckbox = document.querySelector('input[name="status"]:checked');
+    var alarmTimeSelect = document.getElementById("alarmTime");
+    var agree = document.getElementById('agree').checked;
+    var submitButton = document.getElementById('save');
 
-  if (statusCheckbox.value === "true") {
-    alarmTimeSelect.disabled = false;
-    notificationSubmit.disabled = false;
-  } else {
-    // '비동의' 선택 시 알람 시간 선택 비활성화, 저장 버튼만 활성화
-    alarmTimeSelect.disabled = true;
-    notificationSubmit.disabled = false;
+    if (agree) {
+        alarmTimeSelect.disabled = false;  // 동의하면 알람 시간 선택 가능
+        submitButton.disabled = false;     // 동의하면 저장 버튼 활성화
+    } else {
+        alarmTimeSelect.disabled = true;   // 비동의하면 알람 시간 선택 비활성화
+        submitButton.disabled = false;     // 비동의해도 저장 버튼은 활성화
   }
 }
 
