@@ -3,7 +3,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 from weather_api import weather_scheduler
 from db_manager import delete_db_scheduler, get_weather_data, get_last_weather_data#, insert_notification, delete_user
-#import air_api
+from air_api import air_main
 
 app = Flask(__name__)
 
@@ -25,7 +25,20 @@ def notification_data_save():
     timeset = "24"
     if (status == "true"):
         timeset = request.form['alarmTime']
-    return render_template('index.html', timeset=timeset)
+        return render_template('alarm.html', timeset=timeset)
+    return render_template('index.html')
+
+@app.route('/air')
+def air():
+    return render_template('air.html')
+
+@app.route('/air_request', methods=['POST'])
+def run_air_api():
+    city = request.form['city']
+    pm10_avg, pm25_avg = air_main(city)
+    return render_template('airDisplay.html', city=city, pm10_avg=pm10_avg, pm25_avg=pm25_avg) 
+
+    
 
     
     

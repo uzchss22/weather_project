@@ -14,10 +14,10 @@ def get_today_date():
 def connect_to_db():
     try:
         connection = mysql.connector.connect(
-            host='weather-database.choogqsc8cqn.ap-northeast-2.rds.amazonaws.com',
-            database='weather_database',
+            host='RDSaddr',
+            database='weather_db',
             user='admin',
-            password='chlgur12',
+            password='temp',
             charset= 'utf8mb4'
         )
         return connection
@@ -27,7 +27,7 @@ def connect_to_db():
 
 """ 전처리 된 데이터를 wtr_info 테이블에 삽입하는 함수 """ # 이 함수는 최적화를 위해 예외적으로 비동기화로 실행. (fetch_weather(), fetch_and_process_data(), insert_weather_data())
 async def insert_weather_data(data):
-    connection = await aiomysql.connect(host='weather-database.choogqsc8cqn.ap-northeast-2.rds.amazonaws.com', port=3306, user='admin', password='chlgur12', db='weather_database', charset='utf8mb4')
+    connection = await aiomysql.connect(host='RDSaddr', port=3306, user='admin', password='temp', db='weather_db', charset='utf8mb4')
     try:
         async with connection.cursor() as cursor:
             insert_query = """

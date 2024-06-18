@@ -2,79 +2,25 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" href="/static/favicon.ico">
 <link rel="stylesheet" href="/static/css/style.css">
-<title>날씨 선택</title>
+<title>지역 선택</title>
 <!-- <script src="/static/js/main.js"></script> -->
-<script src="/static/js/util.js"></script>
-<script>
-// 알림 권한 요청 함수
-function requestNotificationPermission() {
-    // Notification API를 지원하는지 확인
-    if (!("Notification" in window)) {
-        alert("이 브라우저는 알림을 지원하지 않습니다.");
-    } else if (Notification.permission === "granted") {
-        // 이미 권한이 허용된 경우
-        console.log("알림 권한이 이미 허용되어 있습니다.");
-    } else if (Notification.permission !== "denied") {
-        // 권한 요청
-        Notification.requestPermission().then(permission => {
-            // 사용자가 권한을 허용한 경우
-            if (permission === "granted") {
-                console.log("알림이 허용되었습니다!");
-            }
-        });
-    }
-}
-
-// 알림 보내기 함수
-function sendNotification(message) {
-    // 새 알림 생성
-    new Notification(message);
-}
-
-// 현재 시간과 알림 시간 차를 밀리초로 반환해주는 함수
-function getTimeUntil(targetHour) {
-    const now = new Date();
-    const target = new Date();
-
-    target.setHours(targetHour, 0, 0, 0);
-
-    // 이미 시간이 지났다면 다음 날로 설정
-    if (target <= now) {
-        target.setDate(target.getDate() + 1);
-    }
-
-    return target.getTime() - now.getTime(); // 밀리초 단위로 차이 계산
-}
-
-const timeset = "{{ timeset }}";  // 문자열을 정수로 변환
-const parsedTimeset = parseInt(timeset, 10);
-
-  if (timeset !== 24) {  // timeset이 24가 아닐 때만 실행
-    const delay = getTimeUntil(parsedTimeset);  // timeset을 사용하여 시간 계산
-    setTimeout(() => {
-      sendNotification("오늘 날씨는 맑습니다.");
-    }, delay);
-  } 
-
-// 알림 권한 요청
-requestNotificationPermission();
-
-</script>
+<script src="../static/js/util.js"></script>
 </head>
 <body>
-  <header class="main-header"><a href="index.html" class="home-link">날씨 알리미</a></header>
+  <header class="main-header"><a href="index.html" class="home-link">오늘의 날씨</a></header>
   <div class="container">
     <h1 class="title">지역을 선택하세요.</h1>
     <form action="/submit" method="post" class="form-region">
       <div class="form-group">
-        <label for="region" class="form-label">지역 선택:</label>
+        <label for="region" class="form-label">지역 선택</label>
         <select id="region" name="region" class="form-select" onchange="updateCities(this.value)">
         </select>
       </div>
 
       <div class="form-group">
-        <label for="city" class="form-label">도시 선택:</label>
+        <label for="city" class="form-label">도시 선택</label>
         <select id="city" name="city" class="form-select" onchange="validateForm()" disabled>
         </select>
       </div>
@@ -92,7 +38,7 @@ requestNotificationPermission();
         <label for="status" class="radio-label">비동의</label><br>
       </div>
       <div class="form-group">
-        <label for="alarmTime" class="form-label">알람 시간 선택:</label>
+        <label for="alarmTime" class="form-label">알람 시간 선택</label>
         <select id="alarmTime" name="alarmTime" class="form-select" disabled>
             <option value="00">00:00</option>
             <option value="01">01:00</option>
@@ -124,6 +70,7 @@ requestNotificationPermission();
 
       <input type="submit" id="save" class="btn" value="설정 저장" disabled>
     </form>
+  <a href="{{ url_for('air') }}" style="font-size:smaller !important;">> 미세먼지 정보 보러가기</a>
   </div>
 </body>
 </html>

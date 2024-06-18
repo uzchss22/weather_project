@@ -1,0 +1,24 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/static/favicon.ico">
+<link rel="stylesheet" href="/static/css/style.css">
+<title>오늘의 미세먼지 정보</title>
+</head>
+<body>
+  <header class="main-header"><a href="index.html" class="home-link">오늘의 날씨</a></header>
+  <div class="container">
+  <h1 class="title">미세먼지 정보</h1>
+  <div class="weather-info">
+
+    <p class="location">{{ city }}</p>
+    <p class="temperature">초미세먼지(PM2.5) 평균 농도: {{ pm25_avg }} µg/m³</p>
+
+    <p class="condition">미세먼지(PM10) 평균 농도: {{ pm10_avg }} µg/m³</p>
+  </div>
+  </div>
+</div>
+</body>
+</html>

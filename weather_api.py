@@ -31,7 +31,7 @@ async def fetch_and_process_weather_data(api_key, base_url, base_time, csv_file_
         tasks = []
         for index, row in df.iterrows():
             nx, ny, region, city = row['nx'], row['ny'], row['region'], row['city']
-            url = f"{base_url}authKey={api_key}&dataType=JSON&numOfRows=10&pageNo=1&base_date={base_date}&base_time={base_time}&nx={nx}&ny={ny}"
+            url = f"{base_url}authkey={api_key}&datatype=json&numofrows=10&pageno=1&base_date={base_date}&base_time={base_time}&nx={nx}&ny={ny}"
             tasks.append(fetch_weather(session, url))
         
         responses = await asyncio.gather(*tasks)
@@ -52,5 +52,3 @@ async def fetch_and_process_weather_data(api_key, base_url, base_time, csv_file_
 
 def weather_scheduler():
     asyncio.run(fetch_and_process_weather_data(API_KEY, BASE_URL, BASE_TIME, CSV_FILE_PATH))
-
-

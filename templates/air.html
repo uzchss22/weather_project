@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>미세먼지</title>
+</head>
+<body>
+  <header class="main-header"><a href="index.html" class="home-link">오늘의 날씨</a></header>
+  <div class="container">
+    <form action="/air_request" method="post">
+        <label for="city" class="form-label">지역 선택</label>
+        <select id="city" name="city" class="form-select">
+            <option value="서울">서울</option>
+            <option value="부산">부산</option>
+            <option value="대구">대구</option>
+            <option value="인천">인천</option>
+            <option value="광주">광주</option>
+            <option value="대전">대전</option>
+            <option value="울산">울산</option>
+            <option value="경기">경기</option>
+            <option value="강원">강원</option>
+            <option value="충북">충북</option>
+            <option value="충남">충남</option>
+            <option value="전북">전북</option>
+            <option value="전남">전남</option>
+            <option value="경북">경북</option>
+            <option value="경남">경남</option>
+            <option value="제주">제주</option>
+            <option value="세종">세종</option>
+      <input type="submit" id="save" class="btn" value="제출">
+    </form>
+    </div>
+</body>
+</html>
